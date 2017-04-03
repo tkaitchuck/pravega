@@ -1,7 +1,7 @@
 package com.emc.pravega.stream.lowlevel;
 
+import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.List;
 
 public interface ByteStreamWriter {
     
@@ -17,9 +17,20 @@ public interface ByteStreamWriter {
     void write(ByteBuffer data, long atOffset);
     
     /**
-     * @return The total number of bytes that have been passed to write
+     * Asynchronously and atomically write all of the data in the provided input stream. This
+     * intended for streaming very large writes that need to be atomic. So it does not require the
+     * data fit in memory, but it is higher overhead than simply calling {@link #write(ByteBuffer)}.
+     * 
+     * Note: This will not affect the value of {@link #getNondurableLength()} until the end of the
+     * input stream has been reached.
      */
-    long getWrittenLength();
+    void write(InputStream in);
+    
+    /**
+     * Returns the total number of bytes that will have been stored once all buffers have been flushed.
+     * This is useful for computing a value to pass to {@link #write(ByteBuffer, long)}
+     */
+    long getNondurableLength();
     
     /**
      * @return The total number of bytes that have been durably stored so far.
@@ -30,28 +41,7 @@ public interface ByteStreamWriter {
      * Block until all outstanding writes are completed.
      */
     void flush();
-    
-    /**
-     * Returns a new stream that is orginized under this one.
-     */
-    ByteStreamWriter createChildStream(String name);
-    
-    /**
-     * Returns the list of children of this stream.
-     */
-    List<String> listChildStreams();
-    
-    /**
-     * Returns an existing child stream.
-     */
-    ByteStreamWriter getChildStream(String name);
-    
-    /**
-     * Atomically moves all the data written to the child stream to the end of this stream.
-     * After this operation the child stream will not exist, and this stream will have all the data.
-     */
-    void mergeChildStream(ByteStreamWriter child);
-    
+
     /**
      * Prohibit any future writes to this stream.
      */

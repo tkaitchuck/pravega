@@ -1,14 +1,13 @@
 package com.emc.pravega.stream.lowlevel;
 
-import com.emc.pravega.stream.Stream;
 import java.nio.ByteBuffer;
 
 public interface ByteStreamReader {
     
     /**
-     * Get the stream this reader corresponds with.
+     * Returns the total length of all data written to the stream thus far.
      */
-    Stream getStream();
+    long fetchCurrentStreamLength();
     
     /**
      * Returns the current offset in the stream.
