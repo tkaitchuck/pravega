@@ -1,9 +1,15 @@
 package com.emc.pravega.stream.lowlevel;
 
+import com.emc.pravega.common.netty.WireCommands.StreamSegmentInfo;
 import com.emc.pravega.stream.Segment;
 
 public interface SegmentManager {
 
+    /**
+     * Gets info about the segment.
+     */
+    public StreamSegmentInfo getSegmentInfo(Segment segment);
+    
     /**
      * Create a new segment
      * @param segment The segment to create.
