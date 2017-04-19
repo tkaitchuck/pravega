@@ -10,8 +10,8 @@ public interface SegmentClientFactory {
      SegmentWriter createSegmentWriter(Segment segment);
 
     /**
-     * Creates a new reader that can read from the requested segment
+     * Connects a listener to a segment starting at the specified offset.
      */
-    SegmentReader createReader(Segment segment, long offset);    
+    void listenToSegment(Segment segment, long offset, SegmentListener listener);    
     
 }
